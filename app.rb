@@ -8,13 +8,21 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
+  slim(:index)
+end
+
+get('/login') do
+  slim(:login)
+end
+
+get('/register') do
   slim(:register)
 end
 
-post('login') do
+post('/login') do
   username = params[:username]
   password = params[:password]
-  db = SQLite3::Database.new('db/databasae.db')
+  db = SQLite3::Database.new('db/database.db')
   db.results_as_hash = true
   result = db.execute("SELECT * FROM users WHERE username = ?", username).first
   pwdigest = result["pwdigest"]
@@ -24,7 +32,8 @@ post('login') do
     sessions[:user] = username
     redirect('/todos')
   else
-    "FEL LOSEN"
+    "FEL LOSEN
+    a href='/login' försök igen"
   end
 end
 
