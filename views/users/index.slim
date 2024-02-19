@@ -1,0 +1,13 @@
+h1 All Users
+
+
+ol
+  - users.each do |user|
+    li 
+      a href="users/#{users['UserId']}" #{user["Username"]}
+      a href="users/#{users['UserId']}/edit" Uppdatera
+      form method="POST" action="users/#{user['UserId']}/delete"
+        input type="submit" value="Delete"
+      
+      
+            
