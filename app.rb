@@ -8,11 +8,7 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
-  puts "user:"
-  puts session[:user]
-  if session[:user] == nil
-    puts "no user"
-  end
+  if session[:user] = nil
   slim(:index)
 end
 
@@ -24,12 +20,16 @@ get('/register') do
   slim(:register)
 end
 
+def get_user(username)
+  db = SQLite3::Database.new('db/database.db')
+  db.results_as_hash = true
+  return db.execute("SELECT * FROM users WHERE username = ?", username).first
+end
+
 post('/login') do
   username = params[:username]
   password = params[:password]
-  db = SQLite3::Database.new('db/database.db')
-  db.results_as_hash = true
-  result = db.execute("SELECT * FROM users WHERE username = ?", username).first
+  result = get_user(username)
   pwdigest = result["pwdigest"]
   id = result["id"]
 
@@ -41,21 +41,28 @@ post('/login') do
   end
 end
 
+def new_user(username, password) 
+  password_digest = BCrypt::Password.create(password)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("INSERT INTO users (username,pwdigest) VALUES (?, ?)", username, password_digest)
+end
+
 post('/users/new') do 
   username = params[:username]
   password = params[:password]
   password_confirm = params[:password_confirm]
 
   if (password == password_confirm)
-    password_digest = BCrypt::Password.create(password)
-    db = SQLite3::Database.new('db/database.db')
-    db.execute("INSERT INTO users (username,pwdigest) VALUES (?, ?)", username, password_digest)    
+    new_user(username, password)
     redirect('/')
-
   else
     #fel
     "losenorden matchade inte"
   end
+end
+
+get('/users/:user/profile') do
+  slim(:"users/profile")
 end
 
 post('/calculate') do
