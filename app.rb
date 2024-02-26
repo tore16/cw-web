@@ -8,6 +8,11 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
+  puts "user:"
+  puts session[:user]
+  if session[:user] == nil
+    puts "no user"
+  end
   slim(:index)
 end
 
@@ -29,11 +34,10 @@ post('/login') do
   id = result["id"]
 
   if BCrypt::Password.new(pwdigest) == password
-    sessions[:user] = username
+    session[:user] = username
     redirect('/todos')
   else
-    "FEL LOSEN
-    a href='/login' försök igen"
+    "FEL LOSEN"
   end
 end
 
