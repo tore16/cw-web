@@ -20,10 +20,16 @@ get('/register') do
   slim(:register)
 end
 
-def get_user(username)
+def get_user_by_name(username)
   db = SQLite3::Database.new('db/database.db')
   db.results_as_hash = true
   return db.execute("SELECT * FROM users WHERE username = ?", username).first
+end
+
+def get_user_by_id(userid)
+  db = SQLite3::Database.new('db/database.db')
+  db.results_as_hash = true
+  return db.execute("SELECT * FROM users WHERE id = ?", userid).first
 end
 
 post('/login') do
@@ -35,6 +41,7 @@ post('/login') do
 
   if BCrypt::Password.new(pwdigest) == password
     session[:user] = username
+    session[:user_id] = id
     redirect('/todos')
   else
     "FEL LOSEN"
@@ -61,31 +68,8 @@ post('/users/new') do
   end
 end
 
-get('/users/:user/profile') do
+get('/users/:user') do
   slim(:"users/profile")
-end
-
-post('/calculate') do
-  val1 = params[:value1].to_f
-  operator = params[:operator]
-  val2 = params[:value2].to_f
-
-  result = case operator
-  when "+"
-    "#{val1} + #{val2} = #{val1 + val2}"
-  when "-"
-    "#{val1} - #{val2} = #{val1 - val2}"
-  when "/"
-    "#{val1} / #{val2} = #{val1 / val2}"
-  when "*"
-    "#{val1} * #{val2} = #{val1 * val2}"
-  else
-    "FEL"
-  end
-
-  puts("result: #{result}")
-  session[:results] << result
-  redirect('/calculator')
 end
 
 get("/data") do
