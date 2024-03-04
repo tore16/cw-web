@@ -1,0 +1,14 @@
+<h1> All Users </h1>
+
+
+<ol>
+  <% users.each do |user| %>
+    <li> 
+      <a href="users/<%= user["id"] %>"> <%= user["username"] %> </a>
+      <a href="users/<%= user['id'] %>/edit"> Uppdatera </a>
+      <a href="users/<%= user["id"] %>/delete"> Radera </a>
+    </li>
+  <% end %>
+  </ol>  
+      
+            
