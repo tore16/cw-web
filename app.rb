@@ -5,15 +5,16 @@ require 'csv'
 require 'sqlite3'
 require 'bcrypt'
 
-require_relative "models.rb"
+require_relative 'models.rb'
 
 enable :sessions
 
+
 get('/') do
-  if session[:user] == nil
-    slim(:index)
+  if session[:user] = nil
+    erb(:home)
   else
-    slim(:home)
+    erb(:index)
   end
 end
 
@@ -35,10 +36,14 @@ post('/login') do
   if BCrypt::Password.new(pwdigest) == password
     session[:user] = username
     session[:user_id] = id
-    redirect('/')
+    redirect('/home')
   else
     "FEL LOSEN"
   end
+end
+
+get ('/home') do
+  erb(:home)
 end
 
 post('/users/new') do 
@@ -51,7 +56,7 @@ post('/users/new') do
     redirect('/')
   else
     #fel
-    "losenorden matchade inte"
+    "lösenorden matchade inte"
   end
 end
 
@@ -61,7 +66,26 @@ get('/users') do
 end
 
 get('/users/:user') do
-  user = params[:user]
-  result = get_user_by_id(user)
+  id = params[:user]
+  result = get_user_by_id(id)
   erb(:"users/show",locals:{user:result})
+end
+
+get('/users/:user/edit') do
+  id = params[:user]
+  result = get_user_by_id(id)
+  erb(:"users/edit",locals:{user:result})
+end 
+
+post ('/users/:user/update') do
+  id = params[:user].to_i
+  new_name = params[:name]
+  update_user(id, new_name)
+  redirect('/users')
+end
+
+post ('/users/:user/delete') do
+  id = params[:user].to_i
+  delete_user(id)
+  redirect('/users')
 end

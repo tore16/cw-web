@@ -6,7 +6,9 @@
     <li> 
       <a href="users/<%= user["id"] %>"> <%= user["username"] %> </a>
       <a href="users/<%= user['id'] %>/edit"> Uppdatera </a>
-      <a href="users/<%= user["id"] %>/delete"> Radera </a>
+      <form action="/users/<%= user['id'] %>/delete" method=post>
+        <input type="submit" value="Radera" >
+      </form>
     </li>
   <% end %>
 </ol>  

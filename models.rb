@@ -21,3 +21,13 @@ def get_user_by_id(userid)
   db.results_as_hash = true
   return db.execute("SELECT * FROM users WHERE id = ?", userid).first
 end
+
+def update_user(userid, new_name)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("UPDATE users SET username=? Where Id = ?", new_name, userid)
+end
+
+def delete_user(userid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("DELETE FROM users WHERE Id = ?", userid)
+end
