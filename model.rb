@@ -31,3 +31,9 @@ def delete_user(userid)
   db = SQLite3::Database.new('db/database.db')
   db.execute("DELETE FROM users WHERE Id = ?", userid)
 end
+
+def get_tasks()
+  db = SQLite3::Database.new('db/database.db')
+  db.results_as_hash = true
+  db.execute("SELECT * FROM tasks")
+end

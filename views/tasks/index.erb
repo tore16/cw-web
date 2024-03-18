@@ -1,0 +1,14 @@
+<h1> All tasks </h1>
+
+
+<ol>
+  <% tasks.each do |task| %>
+    <li> 
+      <a href="tasks/<%= task['id'] %>"> <%= task["name"] %> </a>
+      <a href="tasks/<%= task['id'] %>/edit"> Uppdatera </a>
+      <form action="/tasks/<%= task['id'] %>/delete" method=post>
+        <input type="submit" value="Radera" >
+      </form>
+    </li>
+  <% end %>
+</ol>  

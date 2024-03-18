@@ -4,7 +4,7 @@ require 'csv'
 require 'sqlite3'
 require 'bcrypt'
 
-require_relative 'models.rb'
+require_relative 'model.rb'
 
 enable :sessions
 
@@ -91,4 +91,9 @@ post ('/users/:user/delete') do
   id = params[:user].to_i
   delete_user(id)
   redirect('/users')
+end
+
+get ('/tasks') do
+  result = get_tasks()
+  erb(:"tasks/index",locals:{tasks:result})
 end
