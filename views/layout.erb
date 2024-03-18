@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title> A Document </title>
+  </head>
+  <body>
+    <main>
+      <h1> Galen sida, välkommen <%= session[:user] %> </h1>
+      <%= yield %>
+    <a href="/calculator"> calculator </a>
+    <a href="/data"> data </a>
+    </main>
+  </body>
+</html>

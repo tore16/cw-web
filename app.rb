@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'sinatra/reloader'
-require 'slim'
 require 'csv'
 require 'sqlite3'
 require 'bcrypt'
@@ -11,7 +10,7 @@ enable :sessions
 
 
 get('/') do
-  if session[:user] = nil
+  if session[:user] != nil
     erb(:home)
   else
     erb(:index)
@@ -19,26 +18,30 @@ get('/') do
 end
 
 get('/login') do
-  slim(:login)
+  erb(:login)
 end
 
 get('/register') do
-  slim(:register)
+  erb(:register)
 end
 
 post('/login') do
   username = params[:username]
   password = params[:password]
   result = get_user_by_name(username)
-  pwdigest = result["pwdigest"]
-  id = result["id"]
 
-  if BCrypt::Password.new(pwdigest) == password
-    session[:user] = username
-    session[:user_id] = id
-    redirect('/home')
+  if result != nil
+    pwdigest = result["pwdigest"]
+    id = result["id"]
+    if BCrypt::Password.new(pwdigest) == password
+      session[:user] = username
+      session[:user_id] = id
+      redirect('/home')
+    else
+      "FEL LOSEN"
+    end
   else
-    "FEL LOSEN"
+    "Fel Användarnamn"
   end
 end
 
