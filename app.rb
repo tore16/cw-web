@@ -61,6 +61,7 @@ post('/users/new') do
     #fel
     "lösenorden matchade inte"
   end
+
 end
 
 get('/users') do
@@ -96,4 +97,47 @@ end
 get ('/tasks') do
   result = get_tasks()
   erb(:"tasks/index",locals:{tasks:result})
+end
+
+get ('/tasks/new') do
+  erb(:"tasks/new")
+end
+
+get('/tasks/:task') do
+  id = params[:task]
+  result = get_task_by_id(id)
+  erb(:"tasks/show",locals:{task:result})
+end
+
+get('/tasks/:task/edit') do
+  id = params[:task]
+  result = get_task_by_id(id)
+  erb(:"tasks/edit",locals:{task:result})
+end 
+
+post ('/tasks/:task/update') do
+  id = params[:task].to_i
+  name = params[:name]
+  type = params[:type]
+  speed = params[:speed]
+  content = params[:content]
+
+  update_task(id, name, type, speed, content)
+  redirect('/tasks')
+end
+
+post ('/tasks/:task/delete') do
+  id = params[:task].to_i
+  delete_task(id)
+  redirect('/tasks')
+end
+
+post ('/tasks/new') do
+  name = params[:name]
+  type = params[:type]
+  speed = params[:speed]
+  content = params[:content]
+
+  new_task(name, type, speed, content)
+  redirect('/tasks')
 end
