@@ -77,16 +77,19 @@ def has_completed(taskid)
 end
 
 def add_comment(taskid, userid, text)
+  time = Time.now.to_i
   db = SQLite3::Database.new('db/database.db')
-  db.execute("INSERT INTO comments (userid,taskid,text) VALUES (?, ?, ?)", userid, taskid, text)
+  db.execute("INSERT INTO comments (userid,taskid,time,text) VALUES (?, ?, ?, ?)", userid, taskid, time, text)
 end
 
 def get_comments_by_user(userid)
   db = SQLite3::Database.new('db/database.db')
+  db.results_as_hash = true
   db.execute("Select * FROM comments WHERE userid = ?", userid)
 end
 
 def get_comments_by_task(taskid)
   db = SQLite3::Database.new('db/database.db')
-  db.execute("Select * FROM comments WHERE taskid = ?", taskid)
+  db.results_as_hash = true
+  db.execute("Select * FROM comments INNER JOIN users ON comments.userid = users.id WHERE taskid = ?", taskid)
 end

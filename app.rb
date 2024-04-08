@@ -107,6 +107,8 @@ get('/tasks/:task') do
   result = get_task_by_id(id)
   result1 = has_completed(id)
   result2 = get_comments_by_task(id)
+  puts "result:"
+  puts result2
   erb(:"tasks/show",locals:{task:result,users:result1,comments:result2})
 end
 
@@ -150,5 +152,13 @@ post ('/tasks/complete') do
   puts (taskid)
   puts (userid)
   complete_task(userid, taskid)
+  redirect("/tasks/#{taskid}")
+end
+
+post ('/comments/add') do
+  taskid = params[:taskid]
+  userid = session[:user_id]
+  text = params[:content]
+  add_comment(taskid, userid, text)
   redirect("/tasks/#{taskid}")
 end

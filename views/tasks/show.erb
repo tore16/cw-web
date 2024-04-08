@@ -14,18 +14,20 @@
 </ol>
 
 <h2> Kommentarer </h2>
-<form action="comment" method="POST">
+<form action="/comments/add" method="POST">
   <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
   <input type="text" name="content" placeholder="Skriv en kommentar"/>
   <input type="submit" value="Kommentera"/>
 </form>
 
-<ol>
-  <% comments.each do |comment| %>
-    <li>
-      <h3> användare <%= comment['userid'] %> </h3>
-      <h4> <%= comment['time'] </h4>
-      <p> <%= comment['text'] %> </p>
-    </li>
-  <% end %>
-</ol>
+<% if comments != nil %>
+  <ol>
+    <% comments.each do |comment| %>
+      <li>
+        <h3> <%= comment['username'] %> </h3>
+        <h4> <%= Time.at(comment['time']) %> </h4>
+        <p> <%= comment['text'] %> </p>
+      </li>
+    <% end %>
+  </ol>
+<% end %>
