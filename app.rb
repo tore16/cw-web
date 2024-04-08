@@ -8,7 +8,6 @@ require_relative 'model.rb'
 
 enable :sessions
 
-
 get('/') do
   if session[:user] != nil
     erb(:home)
@@ -106,7 +105,9 @@ end
 get('/tasks/:task') do
   id = params[:task]
   result = get_task_by_id(id)
-  erb(:"tasks/show",locals:{task:result})
+  result1 = has_completed(id)
+  result2 = get_comments_by_task(id)
+  erb(:"tasks/show",locals:{task:result,users:result1,comments:result2})
 end
 
 get('/tasks/:task/edit') do
@@ -140,4 +141,14 @@ post ('/tasks/new') do
 
   new_task(name, type, speed, content)
   redirect('/tasks')
+end
+
+post ('/tasks/complete') do
+  userid = session[:user_id]
+  taskid = params[:taskid]
+  puts "taskid:"
+  puts (taskid)
+  puts (userid)
+  complete_task(userid, taskid)
+  redirect("/tasks/#{taskid}")
 end

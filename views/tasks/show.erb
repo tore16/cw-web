@@ -1,3 +1,31 @@
 <h1> <%= task['name'] %> </h1>
 
 <p> Uppgiften som du har sökt efter heter <%= task['name'] %>. </p>
+
+<form action="complete" method="POST">
+  <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
+  <input type="submit" value="Avklara"/>
+</form>
+
+<ol>
+  <% users.each do |name| %>
+    <li> <%= name['username'] %> </li>
+  <% end %>
+</ol>
+
+<h2> Kommentarer </h2>
+<form action="comment" method="POST">
+  <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
+  <input type="text" name="content" placeholder="Skriv en kommentar"/>
+  <input type="submit" value="Kommentera"/>
+</form>
+
+<ol>
+  <% comments.each do |comment| %>
+    <li>
+      <h3> användare <%= comment['userid'] %> </h3>
+      <h4> <%= comment['time'] </h4>
+      <p> <%= comment['text'] %> </p>
+    </li>
+  <% end %>
+</ol>
