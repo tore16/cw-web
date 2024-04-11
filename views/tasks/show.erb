@@ -2,7 +2,7 @@
 
 <p> Uppgiften som du har sökt efter heter <%= task['name'] %>. </p>
 
-<form action="complete" method="POST">
+<form action="/private/tasks/complete" method="POST">
   <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
   <input type="submit" value="Avklara"/>
 </form>
@@ -14,11 +14,13 @@
 </ol>
 
 <h2> Kommentarer </h2>
-<form action="/comments/add" method="POST">
-  <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
-  <input type="text" name="content" placeholder="Skriv en kommentar"/>
-  <input type="submit" value="Kommentera"/>
-</form>
+<% if session[:user] != nil %>
+  <form action="/private/comments/add" method="POST">
+    <input type="hidden" id="taskid" name="taskid" value="<%= task['id'] %>"/>
+    <input type="text" name="content" placeholder="Skriv en kommentar"/>
+    <input type="submit" value="Kommentera"/>
+  </form>
+<% end %>
 
 <% if comments != nil %>
   <ol>
@@ -27,8 +29,8 @@
         <h3> <%= comment['username'] %> </h3>
         <h4> <%= Time.at(comment['time']) %> </h4>
         <p> <%= comment['text'] %> </p>
-        <a href="/comments/<%= comment['id'] %>/edit"> Redigera </a>
-        <form action="/comments/delete" method="POST">
+        <a href="/admin/comments/<%= comment['id'] %>/edit"> Redigera </a>
+        <form action="/admin/comments/delete" method="POST">
           <input type="hidden" name="id" value="<%= comment['id'] %>"/>
           <input type="submit" value="Radera"/>
         </form>

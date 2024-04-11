@@ -5,12 +5,14 @@
   <% tasks.each do |task| %>
     <li> 
       <a href="tasks/<%= task['id'] %>"> <%= task["name"] %> </a>
-      <a href="tasks/<%= task['id'] %>/edit"> Uppdatera </a>
-      <form action="/tasks/<%= task['id'] %>/delete" method=post>
-        <input type="submit" value="Radera" >
-      </form>
+      <% if session[:admin] %>
+        <a href="admin/tasks/<%= task['id'] %>/edit"> Uppdatera </a>
+        <form action="/admin/tasks/<%= task['id'] %>/delete" method=post>
+          <input type="submit" value="Radera" >
+        </form>
+      <% end %>
     </li>
   <% end %>
 </ol>  
 
-<a href="tasks/new"> Skapa Ny Uppgift </a>
+<a href="admin/tasks/new"> Skapa Ny Uppgift </a>

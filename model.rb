@@ -22,9 +22,9 @@ def get_user_by_id(userid)
   db.execute("SELECT * FROM users WHERE id = ?", userid).first
 end
 
-def update_user(userid, new_name)
+def update_user(userid, new_name, is_admin)
   db = SQLite3::Database.new('db/database.db')
-  db.execute("UPDATE users SET username=? Where Id = ?", new_name, userid)
+  db.execute("UPDATE users SET username=?,authorisation_level=? Where Id = ?", new_name, is_admin, userid)
 end
 
 def delete_user(userid)

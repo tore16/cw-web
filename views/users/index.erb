@@ -5,10 +5,12 @@
   <% users.each do |user| %>
     <li> 
       <a href="users/<%= user["id"] %>"> <%= user["username"] %> </a>
-      <a href="users/<%= user['id'] %>/edit"> Uppdatera </a>
-      <form action="/users/<%= user['id'] %>/delete" method=post>
-        <input type="submit" value="Radera" >
-      </form>
+      <% if session[:admin] %>
+      <a href="admin/users/<%= user['id'] %>/edit"> Uppdatera </a>
+        <form action="/admin/users/<%= user['id'] %>/delete" method=post>
+          <input type="submit" value="Radera" >
+        </form>
+      <% end %>
     </li>
   <% end %>
 </ol>  

@@ -10,7 +10,7 @@
       <a href="/"> Hem </a>
       <%= yield %>
     <% if session[:user] != nil %>
-      <a href="/users/<%= session[:user] %>"> Din Profil </a>
+      <a href="/users/<%= session[:user_id] %>"> Din Profil </a>
     <% else %>
       <a href="/login"> Logga In </a>
       <a href="/register"> Registrera </a>

@@ -1,4 +1,11 @@
-<form action="/users/<%= user['id'] %>/update" method=post>
-  <input type="text" name="name" value="<%= user['username'] %>" >
-  <input type="submit" value="Uppdatera" >
+<% checked = "" %>
+<% if user['authorisation_level'] >= 1 %>
+  <% checked = "checked" %>
+<% end %>
+
+<form action="/admin/users/<%= user['id'] %>/update" method=post>
+  <input type="text" name="name" value="<%= user['username'] %>"/>
+  <input type="checkbox" name="admin" value="1" <%= checked %> />
+  <label for="admin"> är admin? </label>
+  <input type="submit" value="Uppdatera"/>
 </form>

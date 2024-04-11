@@ -8,6 +8,43 @@ require_relative 'model.rb'
 
 enable :sessions
 
+def test_login()
+  if session[:user] == nil
+    redirect '/login'
+  end
+end
+
+after do
+  p session[:user]
+  p session[:user_id]
+end
+
+before ('/private/*') do
+  test_login()
+end
+
+def test_admin()
+ if session[:user] != nil && !session[:admin]
+   redirect '/'
+ end
+end
+
+before('/admin/*') do
+  test_admin()
+end
+
+before('/admin/comments/:id/*') do
+  test_admin() 
+end
+
+before('/admin/tasks/:task/*') do
+  test_admin()
+end
+
+before('/admin/users/:user/*') do
+  test_admin()
+end
+
 get('/') do
   erb(:index)
 end
@@ -31,7 +68,12 @@ post('/login') do
     if BCrypt::Password.new(pwdigest) == password
       session[:user] = username
       session[:user_id] = id
-      redirect('/home')
+      if result['authorisation_level'] >= 1 
+        session[:admin] = true
+      else
+        session[:admin] = false
+      end
+      redirect('/')
     else
       "FEL LOSEN"
     end
@@ -70,20 +112,24 @@ get('/users/:user') do
   erb(:"users/show",locals:{user:result})
 end
 
-get('/users/:user/edit') do
+get('/admin/users/:user/edit') do
   id = params[:user]
   result = get_user_by_id(id)
   erb(:"users/edit",locals:{user:result})
 end 
 
-post ('/users/:user/update') do
+post ('/admin/users/:user/update') do
   id = params[:user].to_i
+  admin = 0
+  if params[:admin] = 1
+    admin = 1
+  end
   new_name = params[:name]
-  update_user(id, new_name)
+  update_user(id, new_name, admin)
   redirect('/users')
 end
 
-post ('/users/:user/delete') do
+post ('/admin/users/:user/delete') do
   id = params[:user].to_i
   delete_user(id)
   redirect('/users')
@@ -94,7 +140,7 @@ get ('/tasks') do
   erb(:"tasks/index",locals:{tasks:result})
 end
 
-get ('/tasks/new') do
+get ('/admin/tasks/new') do
   erb(:"tasks/new")
 end
 
@@ -103,18 +149,16 @@ get('/tasks/:task') do
   result = get_task_by_id(id)
   result1 = has_completed(id)
   result2 = get_comments_by_task(id)
-  puts "result:"
-  puts result2
   erb(:"tasks/show",locals:{task:result,users:result1,comments:result2})
 end
 
-get('/tasks/:task/edit') do
+get('/admin/tasks/:task/edit') do
   id = params[:task]
   result = get_task_by_id(id)
   erb(:"tasks/edit",locals:{task:result})
 end 
 
-post ('/tasks/:task/update') do
+post ('/admin/tasks/:task/update') do
   id = params[:task].to_i
   name = params[:name]
   type = params[:type]
@@ -125,13 +169,13 @@ post ('/tasks/:task/update') do
   redirect('/tasks')
 end
 
-post ('/tasks/:task/delete') do
+post ('/admin/tasks/:task/delete') do
   id = params[:task].to_i
   delete_task(id)
   redirect('/tasks')
 end
 
-post ('/tasks/new') do
+post ('/admin/tasks/new') do
   name = params[:name]
   type = params[:type]
   speed = params[:speed]
@@ -141,17 +185,14 @@ post ('/tasks/new') do
   redirect('/tasks')
 end
 
-post ('/tasks/complete') do
+post ('/private/tasks/complete') do
   userid = session[:user_id]
   taskid = params[:taskid]
-  puts "taskid:"
-  puts (taskid)
-  puts (userid)
   complete_task(userid, taskid)
   redirect("/tasks/#{taskid}")
 end
 
-post ('/comments/add') do
+post ('/private/comments/add') do
   taskid = params[:taskid]
   userid = session[:user_id]
   text = params[:content]
@@ -159,25 +200,22 @@ post ('/comments/add') do
   redirect("/tasks/#{taskid}")
 end
 
-post ('/comments/delete') do
+post ('/admin/comments/delete') do
   commentid = params[:id]
   comment = get_comment_by_id(commentid)
   delete_comment(commentid)
   redirect("/tasks/#{comment['taskid']}")
 end
 
-get ('/comments/:id/edit') do
+get ('/admin/comments/:id/edit') do
   id = params[:id]
   erb(:"comments/edit",locals:{id:id})
 end
 
-post ('/comments/:id/update') do
+post ('/admin/comments/:id/update') do
   commentid = params[:id]
   comment = get_comment_by_id(commentid)
-  puts "Comment:"
-  puts (comment)
   text = params[:content]
   update_comment(commentid, text)
-  puts (comment)
   redirect("/tasks/#{comment['taskid']}")
 end
