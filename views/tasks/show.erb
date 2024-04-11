@@ -27,6 +27,11 @@
         <h3> <%= comment['username'] %> </h3>
         <h4> <%= Time.at(comment['time']) %> </h4>
         <p> <%= comment['text'] %> </p>
+        <a href="/comments/<%= comment['id'] %>/edit"> Redigera </a>
+        <form action="/comments/delete" method="POST">
+          <input type="hidden" name="id" value="<%= comment['id'] %>"/>
+          <input type="submit" value="Radera"/>
+        </form>
       </li>
     <% end %>
   </ol>

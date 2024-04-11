@@ -1,0 +1,16 @@
+<h1> Roller </h1>
+
+
+<ol>
+  <% roles.each do |role| %>
+    <li> 
+      <p> <%= role["name"] %> </a>
+      <a href="roles/<%= role['id'] %>/edit"> Uppdatera </a>
+      <form action="/roles/<%= role['id'] %>/delete" method=post>
+        <input type="submit" value="Radera" >
+      </form>
+    </li>
+  <% end %>
+</ol>  
+
+<a href="roles/new"> Skapa Ny Roll </a>

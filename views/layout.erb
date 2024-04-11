@@ -7,9 +7,14 @@
   <body>
     <main>
       <h1> Galen sida, välkommen <%= session[:user] %> </h1>
+      <a href="/"> Hem </a>
       <%= yield %>
-    <a href="/users"> Användare </a>
-    <a href="/tasks"> Uppgifter </a>
+    <% if session[:user] != nil %>
+      <a href="/users/<%= session[:user] %>"> Din Profil </a>
+    <% else %>
+      <a href="/login"> Logga In </a>
+      <a href="/register"> Registrera </a>
+    <% end %>
     </main>
   </body>
 </html>

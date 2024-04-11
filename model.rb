@@ -91,5 +91,26 @@ end
 def get_comments_by_task(taskid)
   db = SQLite3::Database.new('db/database.db')
   db.results_as_hash = true
-  db.execute("Select * FROM comments INNER JOIN users ON comments.userid = users.id WHERE taskid = ?", taskid)
+  db.execute("Select * FROM users INNER JOIN comments ON comments.userid = users.id WHERE taskid = ?", taskid)
+end
+
+def delete_comment(commentid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("DELETE FROM comments WHERE Id = ?", commentid)
+end
+
+def update_comment(commentid, content)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("UPDATE comments SET text=? WHERE Id = ?", content, commentid)
+end
+
+def get_comment_by_id (commentid)
+  db = SQLite3::Database.new('db/database.db')
+  db.results_as_hash = true
+  db.execute("SELECT * FROM comments WHERE Id = ?", commentid).first
+end
+
+def get_user_permission_level (userid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("SELECT permission_level FROM users INNER JOIN roles ON users.roleid = roles.id WHERE Id = ?", userid).first
 end

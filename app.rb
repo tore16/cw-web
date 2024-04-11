@@ -9,11 +9,7 @@ require_relative 'model.rb'
 enable :sessions
 
 get('/') do
-  if session[:user] != nil
-    erb(:home)
-  else
-    erb(:index)
-  end
+  erb(:index)
 end
 
 get('/login') do
@@ -161,4 +157,27 @@ post ('/comments/add') do
   text = params[:content]
   add_comment(taskid, userid, text)
   redirect("/tasks/#{taskid}")
+end
+
+post ('/comments/delete') do
+  commentid = params[:id]
+  comment = get_comment_by_id(commentid)
+  delete_comment(commentid)
+  redirect("/tasks/#{comment['taskid']}")
+end
+
+get ('/comments/:id/edit') do
+  id = params[:id]
+  erb(:"comments/edit",locals:{id:id})
+end
+
+post ('/comments/:id/update') do
+  commentid = params[:id]
+  comment = get_comment_by_id(commentid)
+  puts "Comment:"
+  puts (comment)
+  text = params[:content]
+  update_comment(commentid, text)
+  puts (comment)
+  redirect("/tasks/#{comment['taskid']}")
 end
