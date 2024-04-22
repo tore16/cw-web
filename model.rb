@@ -10,6 +10,11 @@ def get_users()
   db.execute("SELECT * FROM users")
 end
 
+def get_usernames()
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("SELECT username FROM users")
+end
+
 def get_user_by_name(username)
   db = SQLite3::Database.new('db/database.db')
   db.results_as_hash = true
@@ -131,15 +136,15 @@ def validate_password(password, password_confirm)
   lowercase = /[a-z]/
   digit = /[0-9]/
 
-  if uppercase.match(password).length <= 0
+  if uppercase.match(password) == nil
     return "Måste ha minst en stor bokstav"
   end
 
-  if lowercase.match(password).length <= 0
+  if lowercase.match(password) == nil
     return "Måste ha minst en liten bokstav"
   end
 
-  if digit.match(password).length <= 0
+  if digit.match(password) == nil
     return "Måste ha minst en siffra"
   end
 
@@ -147,12 +152,12 @@ def validate_password(password, password_confirm)
 end
 
 def validate_username(username)
-  users = get_users()['username']
+  users = get_usernames()
   if username.length <= 0
     return "Användarnamn för kort"
   end
 
-  if users.contains(username)
+  if !users.include? username
     return "Användare finns redan"
   end
 

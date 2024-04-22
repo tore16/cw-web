@@ -68,7 +68,7 @@ post('/login') do
     if BCrypt::Password.new(pwdigest) == password
       session[:user] = username
       session[:user_id] = id
-      if result['authorisation_level'] >= 1 
+      if result['authorisation_level'] >= 1
         session[:admin] = true
       else
         session[:admin] = false
@@ -91,12 +91,19 @@ post('/users/new') do
   password = params[:password]
   password_confirm = params[:password_confirm]
 
-  if (password == password_confirm)
-    new_user(username, password)
-    redirect('/')
+  username_error = validate_username(username)
+  password_error = validate_password(password, password_confirm)
+
+  if username_error == ""
+    if password_error == ""
+      new_user(username, password)
+      redirect('/')
+    else
+      password_error
+    end
+
   else
-    #fel
-    "lösenorden matchade inte"
+    username_error
   end
 
 end
