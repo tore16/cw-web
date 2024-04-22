@@ -61,6 +61,7 @@ end
 
 post('/login') do
   ip = request.ip
+
   if attempts[ip] == nil
     attempts[ip] = 0
   end
@@ -94,7 +95,6 @@ post('/login') do
     attempts[id] = Time.now
     "vänta lite"
   end
-
 end
 
 get ('/home') do
