@@ -151,7 +151,7 @@ def validate_password(password, password_confirm)
   ""
 end
 
-def validate_username(username)
+def validate_name(username)
   users = get_usernames()
   if username.length <= 0
     return "Användarnamn för kort"

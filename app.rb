@@ -8,6 +8,8 @@ require_relative 'model.rb'
 
 enable :sessions
 
+attempts = {}
+
 def test_login()
   if session[:user] == nil
     redirect '/login'
@@ -58,28 +60,41 @@ get('/register') do
 end
 
 post('/login') do
+  ip = request.ip
+  if attempts[ip] == nil
+    attempts[ip] = 0
+  end
+
   username = params[:username]
   password = params[:password]
   result = get_user_by_name(username)
 
-  if result != nil
-    pwdigest = result["pwdigest"]
-    id = result["id"]
-    if BCrypt::Password.new(pwdigest) == password
-      session[:user] = username
-      session[:user_id] = id
-      if result['authorisation_level'] >= 1
-        session[:admin] = true
+  if (Time.now - attempts[ip]).to_i >= 5
+    if result != nil
+      pwdigest = result["pwdigest"]
+      id = result["id"]
+      if BCrypt::Password.new(pwdigest) == password
+        session[:user] = username
+        session[:user_id] = id
+        if result['authorisation_level'] >= 1
+          session[:admin] = true
+        else
+          session[:admin] = false
+        end
+        redirect('/')
       else
-        session[:admin] = false
+        attempts[ip] = Time.now
+        "FEL LOSEN"
       end
-      redirect('/')
     else
-      "FEL LOSEN"
+      attempts[ip] = Time.now
+      "Fel Användarnamn"
     end
   else
-    "Fel Användarnamn"
+    attempts[id] = Time.now
+    "vänta lite"
   end
+
 end
 
 get ('/home') do
@@ -91,7 +106,7 @@ post('/users/new') do
   password = params[:password]
   password_confirm = params[:password_confirm]
 
-  username_error = validate_username(username)
+  username_error = validate_name(username)
   password_error = validate_password(password, password_confirm)
 
   if username_error == ""
