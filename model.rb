@@ -114,3 +114,48 @@ def get_user_permission_level (userid)
   db = SQLite3::Database.new('db/database.db')
   db.execute("SELECT permission_level FROM users INNER JOIN roles ON users.roleid = roles.id WHERE Id = ?", userid).first
 end
+
+# Validering
+
+def validate_password(password, password_confirm)
+
+  if password != password_confirm
+    return "Lösenorden machar inte"
+  end
+
+  if password.length() >= 8
+    return "lösenord måste vara 8 eller längre"
+  end
+
+  uppercase = /[A-Z]/
+  lowercase = /[a-z]/
+  digit = /[0-9]/
+
+  if uppercase.match(password).length <= 0
+    return "Måste ha minst en stor bokstav"
+  end
+
+  if lowercase.match(password).length <= 0
+    return "Måste ha minst en liten bokstav"
+  end
+
+  if digit.match(password).length <= 0
+    return "Måste ha minst en siffra"
+  end
+
+  ""
+end
+
+def validate_username(username)
+  users = get_users()['username']
+  if username.length <= 0
+    return "Användarnamn för kort"
+  end
+
+  if users.contains(username)
+    return "Användare finns redan"
+  end
+
+  ""
+end
+

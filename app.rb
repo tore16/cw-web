@@ -121,7 +121,7 @@ end
 post ('/admin/users/:user/update') do
   id = params[:user].to_i
   admin = 0
-  if params[:admin] = 1
+  if params[:admin] == 1
     admin = 1
   end
   new_name = params[:name]
