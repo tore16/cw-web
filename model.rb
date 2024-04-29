@@ -144,7 +144,7 @@ def validate_password(password, password_confirm)
     return "Lösenorden machar inte"
   end
 
-  if password.length() >= 8
+  if password.length() < 8
     return "lösenord måste vara 8 eller längre"
   end
 

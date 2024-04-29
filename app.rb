@@ -37,6 +37,12 @@ before('/admin/*') do
   end
 end
 
+before('/admin/tasks/:task/*') do
+  unless test_admin()
+    redirect '/'
+  end
+end
+
 def get_user_from_comment(id)
   comment = get_comment_by_id(id)
   get_user_by_id(comment['userid'])
@@ -46,12 +52,6 @@ before('/owner/comments/:id/*') do
   commentid = params[:id]
   owner = get_user_from_comment(id)
   unless test_admin() || test_owner(owner)
-    redirect '/'
-  end
-end
-
-before('/admin/tasks/:task/*') do
-  unless test_admin()
     redirect '/'
   end
 end
