@@ -5,9 +5,9 @@
   <% users.each do |user| %>
     <li> 
       <a href="users/<%= user["id"] %>"> <%= user["username"] %> </a>
-      <% if session[:admin] %>
-      <a href="admin/users/<%= user['id'] %>/edit"> Uppdatera </a>
-        <form action="/admin/users/<%= user['id'] %>/delete" method=post>
+      <% if session[:admin] || user["id"] == session[:user_id] %>
+      <a href="owner/users/<%= user['id'] %>/edit"> Uppdatera </a>
+        <form action="/owner/users/<%= user['id'] %>/delete" method=post>
           <input type="submit" value="Radera" >
         </form>
       <% end %>

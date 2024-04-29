@@ -120,6 +120,22 @@ def get_user_permission_level (userid)
   db.execute("SELECT permission_level FROM users INNER JOIN roles ON users.roleid = roles.id WHERE Id = ?", userid).first
 end
 
+def move_comments (userid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("UPDATE comments SET userid=1 WHERE userid=?", userid)
+end
+
+def remove_completed (userid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("DELETE FROM user_task_rel WHERE userid=?", userid)
+end
+
+def remove_task_comments (taskid)
+  db = SQLite3::Database.new('db/database.db')
+  db.execute("DELETE FROM comments WHERE taskid=?", taskid)
+end
+
+
 # Validering
 
 def validate_password(password, password_confirm)
@@ -157,7 +173,7 @@ def validate_name(username)
     return "Användarnamn för kort"
   end
 
-  if !users.include? username
+  if users.include? username
     return "Användare finns redan"
   end
 
